@@ -19,7 +19,20 @@ struct BankView
     std::array<std::array<float, kPeakBins>, kNumBones> peaks {};
 };
 
+struct LibInfo
+{
+    juce::String id, name, desc, cat;
+    float release = 0.3f;
+    bool oneshot = false;
+    std::vector<std::pair<juce::String, float>> files;   // resource file name, root note
+};
+const std::vector<LibInfo>& libraryInfo();                // parsed once from the embedded library.json
+juce::StringArray bodyNames();
+juce::StringArray bodyDescs();
+std::vector<int> bodyCats();                             // 0 SYNTH, 1 LIVE, 2 HAUNTED
+
 class GdProcessor : public juce::AudioProcessor,
+                    public SampleSource,
                     private juce::AsyncUpdater,
                     private juce::AudioProcessorValueTreeState::Listener
 {
@@ -78,11 +91,16 @@ public:
 
     static juce::AudioProcessorValueTreeState::ParameterLayout createLayout();
 
+    SampleSetPtr currentSet (int body) override;
+    std::atomic<int> loadedBody { -1 };
+
 private:
     void handleAsyncUpdate() override;
     void parameterChanged (const juce::String& id, float) override;
     void finishCapture();
     void rechop();
+    void ensureLibraryLoaded();
+    static SampleSetPtr loadSet (const LibInfo& info);
 
     std::atomic<float>* pBody;  std::atomic<float>* pYears; std::atomic<float>* pRot;   std::atomic<float>* pDrown;
     std::atomic<float>* pSink;  std::atomic<float>* pMold;  std::atomic<float>* pGhost; std::atomic<float>* pBleed;
@@ -102,6 +120,11 @@ private:
     bool capSynced = false;
     std::atomic<int> previewReq { -1 };
     std::atomic<bool> rechopPending { false };
+
+    // sampled bodies
+    juce::SpinLock setLock;
+    SampleSetPtr loaded;
+    std::vector<SampleSetPtr> graveyard;
 
     // bank
     juce::SpinLock bankLock;

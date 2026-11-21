@@ -52,10 +52,14 @@ juce_add_plugin(Gravedigger
     AU_MAIN_TYPE kAudioUnitType_MusicDevice
     PRODUCT_NAME "Gravedigger")
 
+# sample library: Versilian Community Sample Library (VCSL), CC0 1.0
+file(GLOB GD_LIBRARY_FILES ${CMAKE_CURRENT_SOURCE_DIR}/Library/*.ogg ${CMAKE_CURRENT_SOURCE_DIR}/Library/library.json)
+
 juce_add_binary_data(GdData SOURCES
     ${GD_FONT_DIR}/Fraktur.ttf
     ${GD_FONT_DIR}/Oswald.ttf
-    ${GD_FONT_DIR}/PlexMono.ttf)
+    ${GD_FONT_DIR}/PlexMono.ttf
+    ${GD_LIBRARY_FILES})
 
 target_sources(Gravedigger PRIVATE
     Source/PluginProcessor.cpp
@@ -64,6 +68,7 @@ target_sources(Gravedigger PRIVATE
 target_compile_definitions(Gravedigger PUBLIC
     JUCE_WEB_BROWSER=0
     JUCE_USE_CURL=0
+    JUCE_USE_OGGVORBIS=1
     JUCE_VST3_CAN_REPLACE_VST2=0)
 
 target_link_libraries(Gravedigger

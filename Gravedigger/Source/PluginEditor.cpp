@@ -216,6 +216,134 @@ void OptionStrip::mouseDown (const MouseEvent& e)
         }
 }
 
+// ================================================================== body browser
+BodyBrowser::BodyBrowser (GdProcessor& p)
+    : proc (p), raw (p.apvts.getRawParameterValue ("body")),
+      names (bodyNames()), descs (bodyDescs()), cats (bodyCats()) {}
+
+std::vector<int> BodyBrowser::items (int t) const
+{
+    std::vector<int> v;
+    for (int i = 0; i < (int) cats.size(); ++i) if (cats[(size_t) i] == t) v.push_back (i);
+    return v;
+}
+
+float BodyBrowser::maxScroll (int t) const
+{
+    return jmax (0.0f, (float) items (t).size() * rowH - 4.0f - ((float) getHeight() - listY));
+}
+
+void BodyBrowser::reveal (int b)
+{
+    const auto v = items (tab);
+    for (size_t k = 0; k < v.size(); ++k)
+        if (v[k] == b)
+        {
+            const float y = (float) k * rowH;
+            const float visible = (float) getHeight() - listY;
+            if (y < scroll[tab]) scroll[tab] = y;
+            if (y + rowH > scroll[tab] + visible) scroll[tab] = y + rowH - visible;
+            scroll[tab] = jlimit (0.0f, maxScroll (tab), scroll[tab]);
+        }
+}
+
+void BodyBrowser::sync()
+{
+    const int b = (int) std::lround (raw->load());
+    if (b != lastBody && b >= 0 && b < (int) cats.size())
+    {
+        lastBody = b;
+        tab = cats[(size_t) b];
+        reveal (b);
+        repaint();
+    }
+}
+
+void BodyBrowser::paint (Graphics& g)
+{
+    const int cur = (int) std::lround (raw->load());
+    const float W = (float) getWidth();
+    const char* tabNames[] = { "SYNTH", "LIVE", "HAUNTED" };
+    const float tw = W / 3.0f;
+    g.setColour (col::line);
+    g.drawRect (Rectangle<float> (0, 0, W, tabH), 1.0f);
+    for (int t = 0; t < 3; ++t)
+    {
+        auto c = Rectangle<float> (tw * (float) t, 0, tw, tabH);
+        if (t == tab) { g.setColour (t == 2 ? col::deep : col::sel); g.fillRect (c.reduced (1.0f)); }
+        g.setColour (t == tab ? (t == 2 ? col::redTxt : col::bone) : col::muted);
+        g.setFont (mono (10.5f));
+        g.drawText (String (tabNames[t]) + " " + String ((int) items (t).size()), c, Justification::centred);
+    }
+
+    g.saveState();
+    g.reduceClipRegion (Rectangle<int> (0, (int) listY, getWidth(), getHeight() - (int) listY));
+    const auto v = items (tab);
+    for (size_t k = 0; k < v.size(); ++k)
+    {
+        const int i = v[k];
+        const float y = listY + (float) k * rowH - scroll[tab];
+        if (y > (float) getHeight() || y + rowH < listY) continue;
+        auto c = Rectangle<float> (0, y, W - 6.0f, rowH - 4.0f);
+        const bool on = i == cur;
+        g.setColour (on ? col::deep : col::card);
+        g.fillRect (c);
+        g.setColour (on ? col::red : col::line);
+        g.drawRect (c, 1.0f);
+        auto nb = Rectangle<float> (c.getX() + 8.0f, c.getCentreY() - 8.0f, 22.0f, 16.0f);
+        g.setFont (mono (10.0f));
+        if (on) { g.setColour (col::red); g.fillRect (nb); g.setColour (col::bg); }
+        else    { g.setColour (Colour (0xff3a342f)); g.drawRect (nb, 1.0f); g.setColour (col::muted); }
+        g.drawText (String (i + 1).paddedLeft ('0', 2), nb, Justification::centred);
+        g.setColour (on ? col::bone : Colour (0xffCFC6B2));
+        g.setFont (oswald (14.0f).withExtraKerningFactor (0.1f));
+        g.drawText (names[i], Rectangle<float> (c.getX() + 38.0f, c.getY() + 2.0f, c.getWidth() - 42.0f, 18.0f), Justification::centredLeft);
+        String d = descs[i];
+        if (on && i >= kNumSynthBodies && proc.loadedBody.load() != i) d = "digging it up...";
+        g.setColour (on ? col::redTxt : col::muted);
+        g.setFont (mono (9.5f));
+        g.drawText (d, Rectangle<float> (c.getX() + 38.0f, c.getY() + 19.0f, c.getWidth() - 42.0f, 13.0f), Justification::centredLeft);
+    }
+    g.restoreState();
+
+    const float ms = maxScroll (tab);
+    if (ms > 0.0f)
+    {
+        const float trackH = (float) getHeight() - listY;
+        const float thumbH = jmax (20.0f, trackH * trackH / (trackH + ms));
+        const float ty = listY + (trackH - thumbH) * (scroll[tab] / ms);
+        g.setColour (col::line);
+        g.fillRect (W - 3.0f, listY, 3.0f, trackH);
+        g.setColour (col::red);
+        g.fillRect (W - 3.0f, ty, 3.0f, thumbH);
+    }
+}
+
+void BodyBrowser::mouseDown (const MouseEvent& e)
+{
+    if (e.position.y < tabH)
+    {
+        tab = jlimit (0, 2, (int) (e.position.x / ((float) getWidth() / 3.0f)));
+        repaint();
+        return;
+    }
+    if (e.position.y < listY) return;
+    const int k = (int) ((e.position.y - listY + scroll[tab]) / rowH);
+    const auto v = items (tab);
+    if (k >= 0 && k < (int) v.size())
+    {
+        proc.setChoice ("body", v[(size_t) k]);
+        lastBody = v[(size_t) k];
+        repaint();
+    }
+}
+
+void BodyBrowser::mouseWheelMove (const MouseEvent&, const MouseWheelDetails& w)
+{
+    scroll[tab] = jlimit (0.0f, maxScroll (tab), scroll[tab] - w.deltaY * 160.0f);
+    repaint();
+}
+
 // ================================================================== record + eye
 RecordView::RecordView (GdProcessor& p) : proc (p)
 {
@@ -643,20 +771,10 @@ void BonePad::mouseDrag (const MouseEvent& e)
 // ================================================================== main view
 static String pct (float v) { return String (roundToInt (v * 100.0f)) + "%"; }
 
-static StringArray bodyDescs()
-{
-    StringArray d;
-    d.add ("upright " + DOT() + " felt " + DOT() + " old hammers");
-    d.add ("electric " + DOT() + " bell " + DOT() + " warm");
-    d.add ("gut strings " + DOT() + " fingers");
-    d.add ("small section " + DOT() + " 1960s");
-    d.add ("ooh / aah " + DOT() + " church hall");
-    return d;
-}
 
 MainView::MainView (GdProcessor& p)
     : proc (p),
-      body (p, "body", { "PIANO", "RHODES", "NYLON", "STRINGS", "CHOIR" }, OptionStrip::BodyList, bodyDescs()),
+      body (p),
       tomb (p, "tomb", { "SOUL '72", "BASEMENT LO-FI", "HAUNTED REEL '64", "DETROIT DARK" }, OptionStrip::Grid2),
       capLen (p, "caplen", { "4 BAR", "8 BAR", "16 BAR" }, OptionStrip::Segmented),
       mode (p, "mode", { "MELODY", "BONES" }, OptionStrip::Segmented),
@@ -800,8 +918,8 @@ void MainView::dragFile (const File& f, Component* src)
 
 void MainView::resized()
 {
-    body.setBounds (36, 150, 230, 244);
-    roll.setBounds (42, 430, 218, 104);
+    body.setBounds (36, 150, 230, 306);
+    roll.setBounds (42, 484, 218, 52);
 
     record.setBounds (396, 112, 360, 360);
     captureBtn.setBounds (341, 486, 130, 44);
@@ -893,17 +1011,17 @@ void MainView::paint (Graphics& g)
     // midi in
     g.setFont (mono (10.0f).withExtraKerningFactor (0.1f));
     g.setColour (col::muted);
-    g.drawText ("MIDI IN " + DOT() + " YOUR MELODY", Rectangle<float> (36, 404, 200, 14), Justification::centredLeft);
+    g.drawText ("MIDI IN " + DOT() + " YOUR MELODY", Rectangle<float> (36, 462, 200, 14), Justification::centredLeft);
     if (roll.live)
     {
         g.setColour (col::redTxt);
-        g.fillEllipse (226, 408, 6, 6);
-        g.drawText ("LIVE", Rectangle<float> (236, 404, 30, 14), Justification::centredLeft);
+        g.fillEllipse (226, 466, 6, 6);
+        g.drawText ("LIVE", Rectangle<float> (236, 462, 30, 14), Justification::centredLeft);
     }
     g.setColour (Colour (0xff0E0C0B));
-    g.fillRect (36.0f, 424.0f, 230.0f, 116.0f);
+    g.fillRect (36.0f, 480.0f, 230.0f, 60.0f);
     g.setColour (col::line);
-    g.drawRect (36.0f, 424.0f, 230.0f, 116.0f, 1.0f);
+    g.drawRect (36.0f, 480.0f, 230.0f, 60.0f, 1.0f);
 
     // steps
     {
@@ -1043,7 +1161,8 @@ void MainView::timerCallback()
     if (frame % 4 == 0)
     {
         repaint (0, 0, 1180, 70);                 // header
-        repaint (20, 400, 262, 20);               // live label
+        repaint (20, 458, 262, 20);               // live label
+        body.sync();
         repaint (296, 480, 560, 60);              // capture row
         repaint (20, 612, 220, 80);               // status
         for (auto* c : std::initializer_list<Component*> { &body, &tomb, &capLen, &mode, &chop, &years, &rot, &drown,

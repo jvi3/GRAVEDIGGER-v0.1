@@ -69,6 +69,30 @@ private:
     Style style;
 };
 
+// ------------------------------------------------------------ instrument browser: SYNTH / LIVE / HAUNTED
+class BodyBrowser : public juce::Component
+{
+public:
+    explicit BodyBrowser (GdProcessor& p);
+    void paint (juce::Graphics&) override;
+    void mouseDown (const juce::MouseEvent&) override;
+    void mouseWheelMove (const juce::MouseEvent&, const juce::MouseWheelDetails&) override;
+    void sync();
+
+private:
+    std::vector<int> items (int tabIndex) const;
+    float maxScroll (int tabIndex) const;
+    void reveal (int body);
+
+    GdProcessor& proc;
+    std::atomic<float>* raw;
+    juce::StringArray names, descs;
+    std::vector<int> cats;
+    int tab = 0, lastBody = -1;
+    float scroll[3] { 0, 0, 0 };
+    static constexpr float tabH = 26.0f, listY = 34.0f, rowH = 38.0f;
+};
+
 // ------------------------------------------------------------ generic painted button
 class ActionButton : public juce::Component
 {
@@ -177,7 +201,8 @@ private:
     GdProcessor& proc;
     GdLook look;
     juce::Image grain;
-    OptionStrip body, tomb, capLen, mode, chop;
+    BodyBrowser body;
+    OptionStrip tomb, capLen, mode, chop;
     Knob years, rot, drown, sink, mold, ghost, bleed;
     RecordView record;
     MidiRoll roll;

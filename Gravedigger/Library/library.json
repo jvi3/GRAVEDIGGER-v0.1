@@ -1,0 +1,725 @@
+{
+ "source": "Versilian Community Sample Library (VCSL), CC0 1.0 - github.com/sgossner/VCSL",
+ "instruments": [
+  {
+   "id": "upright",
+   "name": "UPRIGHT PIANO",
+   "desc": "real felt upright",
+   "cat": "LIVE",
+   "release": 0.25,
+   "oneshot": false,
+   "samples": [
+    {
+     "file": "upright_00.ogg",
+     "root": 24.0
+    },
+    {
+     "file": "upright_01.ogg",
+     "root": 31.03
+    },
+    {
+     "file": "upright_02.ogg",
+     "root": 35.95
+    },
+    {
+     "file": "upright_03.ogg",
+     "root": 43.01
+    },
+    {
+     "file": "upright_04.ogg",
+     "root": 48.01
+    },
+    {
+     "file": "upright_05.ogg",
+     "root": 55.05
+    },
+    {
+     "file": "upright_06.ogg",
+     "root": 60.01
+    },
+    {
+     "file": "upright_07.ogg",
+     "root": 67.08
+    },
+    {
+     "file": "upright_08.ogg",
+     "root": 72.03
+    },
+    {
+     "file": "upright_09.ogg",
+     "root": 79.02
+    },
+    {
+     "file": "upright_10.ogg",
+     "root": 84.0
+    },
+    {
+     "file": "upright_11.ogg",
+     "root": 91.02
+    },
+    {
+     "file": "upright_12.ogg",
+     "root": 96.03
+    }
+   ]
+  },
+  {
+   "id": "harpsi",
+   "name": "HARPSICHORD",
+   "desc": "italian · baroque",
+   "cat": "LIVE",
+   "release": 0.2,
+   "oneshot": false,
+   "samples": [
+    {
+     "file": "harpsi_00.ogg",
+     "root": 30.05
+    },
+    {
+     "file": "harpsi_01.ogg",
+     "root": 34.04
+    },
+    {
+     "file": "harpsi_02.ogg",
+     "root": 39.05
+    },
+    {
+     "file": "harpsi_03.ogg",
+     "root": 44.1
+    },
+    {
+     "file": "harpsi_04.ogg",
+     "root": 49.08
+    },
+    {
+     "file": "harpsi_05.ogg",
+     "root": 54.09
+    },
+    {
+     "file": "harpsi_06.ogg",
+     "root": 58.15
+    },
+    {
+     "file": "harpsi_07.ogg",
+     "root": 63.13
+    },
+    {
+     "file": "harpsi_08.ogg",
+     "root": 68.11
+    },
+    {
+     "file": "harpsi_09.ogg",
+     "root": 73.1
+    },
+    {
+     "file": "harpsi_10.ogg",
+     "root": 78.04
+    },
+    {
+     "file": "harpsi_11.ogg",
+     "root": 82.11
+    }
+   ]
+  },
+  {
+   "id": "organ",
+   "name": "CHURCH ORGAN",
+   "desc": "pipe organ · open",
+   "cat": "LIVE",
+   "release": 0.35,
+   "oneshot": false,
+   "samples": [
+    {
+     "file": "organ_00.ogg",
+     "root": 24.04
+    },
+    {
+     "file": "organ_01.ogg",
+     "root": 30.02
+    },
+    {
+     "file": "organ_02.ogg",
+     "root": 36.03
+    },
+    {
+     "file": "organ_03.ogg",
+     "root": 42.02
+    },
+    {
+     "file": "organ_04.ogg",
+     "root": 60.0
+    },
+    {
+     "file": "organ_05.ogg",
+     "root": 66.0
+    },
+    {
+     "file": "organ_06.ogg",
+     "root": 72.0
+    },
+    {
+     "file": "organ_07.ogg",
+     "root": 78.0
+    },
+    {
+     "file": "organ_08.ogg",
+     "root": 95.99
+    }
+   ]
+  },
+  {
+   "id": "harp",
+   "name": "CONCERT HARP",
+   "desc": "plucked · bright",
+   "cat": "LIVE",
+   "release": 0.3,
+   "oneshot": false,
+   "samples": [
+    {
+     "file": "harp_00.ogg",
+     "root": 27.84
+    },
+    {
+     "file": "harp_01.ogg",
+     "root": 34.92
+    },
+    {
+     "file": "harp_02.ogg",
+     "root": 40.98
+    },
+    {
+     "file": "harp_03.ogg",
+     "root": 45.03
+    },
+    {
+     "file": "harp_04.ogg",
+     "root": 52.04
+    },
+    {
+     "file": "harp_05.ogg",
+     "root": 58.92
+    },
+    {
+     "file": "harp_06.ogg",
+     "root": 65.01
+    },
+    {
+     "file": "harp_07.ogg",
+     "root": 68.92
+    },
+    {
+     "file": "harp_08.ogg",
+     "root": 75.87
+    },
+    {
+     "file": "harp_09.ogg",
+     "root": 82.89
+    },
+    {
+     "file": "harp_10.ogg",
+     "root": 88.89
+    },
+    {
+     "file": "harp_11.ogg",
+     "root": 92.82
+    },
+    {
+     "file": "harp_12.ogg",
+     "root": 97.91
+    }
+   ]
+  },
+  {
+   "id": "vibes",
+   "name": "VIBRAPHONE",
+   "desc": "soft mallets",
+   "cat": "LIVE",
+   "release": 0.3,
+   "oneshot": false,
+   "samples": [
+    {
+     "file": "vibes_00.ogg",
+     "root": 57.0
+    },
+    {
+     "file": "vibes_01.ogg",
+     "root": 64.0
+    },
+    {
+     "file": "vibes_02.ogg",
+     "root": 71.0
+    },
+    {
+     "file": "vibes_03.ogg",
+     "root": 77.0
+    },
+    {
+     "file": "vibes_04.ogg",
+     "root": 81.0
+    },
+    {
+     "file": "vibes_05.ogg",
+     "root": 88.0
+    }
+   ]
+  },
+  {
+   "id": "kalimba",
+   "name": "KALIMBA",
+   "desc": "thumb piano · kenya",
+   "cat": "LIVE",
+   "release": 0.25,
+   "oneshot": false,
+   "samples": [
+    {
+     "file": "kalimba_00.ogg",
+     "root": 59.04
+    },
+    {
+     "file": "kalimba_01.ogg",
+     "root": 61.48
+    },
+    {
+     "file": "kalimba_02.ogg",
+     "root": 62.89
+    },
+    {
+     "file": "kalimba_03.ogg",
+     "root": 68.34
+    },
+    {
+     "file": "kalimba_04.ogg",
+     "root": 71.07
+    },
+    {
+     "file": "kalimba_05.ogg",
+     "root": 73.13
+    },
+    {
+     "file": "kalimba_06.ogg",
+     "root": 78.42
+    },
+    {
+     "file": "kalimba_07.ogg",
+     "root": 83.0
+    }
+   ]
+  },
+  {
+   "id": "dantranh",
+   "name": "DAN TRANH",
+   "desc": "vietnamese zither · vib",
+   "cat": "LIVE",
+   "release": 0.3,
+   "oneshot": false,
+   "samples": [
+    {
+     "file": "dantranh_00.ogg",
+     "root": 47.02
+    },
+    {
+     "file": "dantranh_01.ogg",
+     "root": 51.0
+    },
+    {
+     "file": "dantranh_02.ogg",
+     "root": 56.14
+    },
+    {
+     "file": "dantranh_03.ogg",
+     "root": 61.15
+    },
+    {
+     "file": "dantranh_04.ogg",
+     "root": 66.14
+    },
+    {
+     "file": "dantranh_05.ogg",
+     "root": 70.79
+    },
+    {
+     "file": "dantranh_06.ogg",
+     "root": 75.01
+    },
+    {
+     "file": "dantranh_07.ogg",
+     "root": 80.14
+    }
+   ]
+  },
+  {
+   "id": "sax",
+   "name": "TENOR SAX",
+   "desc": "breathy · vibrato",
+   "cat": "LIVE",
+   "release": 0.2,
+   "oneshot": false,
+   "samples": [
+    {
+     "file": "sax_00.ogg",
+     "root": 45.91
+    },
+    {
+     "file": "sax_01.ogg",
+     "root": 50.02
+    },
+    {
+     "file": "sax_02.ogg",
+     "root": 54.0
+    },
+    {
+     "file": "sax_03.ogg",
+     "root": 57.87
+    },
+    {
+     "file": "sax_04.ogg",
+     "root": 62.01
+    },
+    {
+     "file": "sax_05.ogg",
+     "root": 65.86
+    },
+    {
+     "file": "sax_06.ogg",
+     "root": 69.95
+    },
+    {
+     "file": "sax_07.ogg",
+     "root": 74.09
+    },
+    {
+     "file": "sax_08.ogg",
+     "root": 79.11
+    },
+    {
+     "file": "sax_09.ogg",
+     "root": 83.94
+    }
+   ]
+  },
+  {
+   "id": "ocarina",
+   "name": "OCARINA",
+   "desc": "clay flute · vibrato",
+   "cat": "LIVE",
+   "release": 0.2,
+   "oneshot": false,
+   "samples": [
+    {
+     "file": "ocarina_00.ogg",
+     "root": 68.96
+    },
+    {
+     "file": "ocarina_01.ogg",
+     "root": 72.09
+    },
+    {
+     "file": "ocarina_02.ogg",
+     "root": 75.08
+    },
+    {
+     "file": "ocarina_03.ogg",
+     "root": 78.11
+    },
+    {
+     "file": "ocarina_04.ogg",
+     "root": 81.05
+    },
+    {
+     "file": "ocarina_05.ogg",
+     "root": 84.11
+    }
+   ]
+  },
+  {
+   "id": "glock",
+   "name": "GLOCKENSPIEL",
+   "desc": "music-box bells",
+   "cat": "LIVE",
+   "release": 0.3,
+   "oneshot": false,
+   "samples": [
+    {
+     "file": "glock_00.ogg",
+     "root": 83.58
+    },
+    {
+     "file": "glock_01.ogg",
+     "root": 90.57
+    },
+    {
+     "file": "glock_02.ogg",
+     "root": 96.29
+    }
+   ]
+  },
+  {
+   "id": "chimes",
+   "name": "TUBULAR BELLS",
+   "desc": "church chimes",
+   "cat": "LIVE",
+   "release": 0.6,
+   "oneshot": false,
+   "samples": [
+    {
+     "file": "chimes_00.ogg",
+     "root": 62.0
+    },
+    {
+     "file": "chimes_01.ogg",
+     "root": 67.75
+    },
+    {
+     "file": "chimes_02.ogg",
+     "root": 72.0
+    },
+    {
+     "file": "chimes_03.ogg",
+     "root": 76.0
+    }
+   ]
+  },
+  {
+   "id": "fmpiano",
+   "name": "FM PIANO",
+   "desc": "tx81z · 80s tv",
+   "cat": "LIVE",
+   "release": 0.25,
+   "oneshot": false,
+   "samples": [
+    {
+     "file": "fmpiano_00.ogg",
+     "root": 12.0
+    },
+    {
+     "file": "fmpiano_01.ogg",
+     "root": 16.0
+    },
+    {
+     "file": "fmpiano_02.ogg",
+     "root": 24.02
+    },
+    {
+     "file": "fmpiano_03.ogg",
+     "root": 28.03
+    },
+    {
+     "file": "fmpiano_04.ogg",
+     "root": 36.02
+    },
+    {
+     "file": "fmpiano_05.ogg",
+     "root": 40.02
+    },
+    {
+     "file": "fmpiano_06.ogg",
+     "root": 48.01
+    },
+    {
+     "file": "fmpiano_07.ogg",
+     "root": 56.01
+    },
+    {
+     "file": "fmpiano_08.ogg",
+     "root": 60.01
+    },
+    {
+     "file": "fmpiano_09.ogg",
+     "root": 68.01
+    },
+    {
+     "file": "fmpiano_10.ogg",
+     "root": 72.01
+    },
+    {
+     "file": "fmpiano_11.ogg",
+     "root": 80.01
+    },
+    {
+     "file": "fmpiano_12.ogg",
+     "root": 84.01
+    },
+    {
+     "file": "fmpiano_13.ogg",
+     "root": 92.0
+    }
+   ]
+  },
+  {
+   "id": "glass",
+   "name": "WINE GLASS",
+   "desc": "rubbed rim · ghostly",
+   "cat": "HAUNTED",
+   "release": 0.8,
+   "oneshot": false,
+   "samples": [
+    {
+     "file": "glass_00.ogg",
+     "root": 75.26
+    },
+    {
+     "file": "glass_01.ogg",
+     "root": 77.92
+    },
+    {
+     "file": "glass_02.ogg",
+     "root": 86.09
+    }
+   ]
+  },
+  {
+   "id": "psaltery",
+   "name": "BOWED PSALTERY",
+   "desc": "bowed steel · horror",
+   "cat": "HAUNTED",
+   "release": 0.8,
+   "oneshot": false,
+   "samples": [
+    {
+     "file": "psaltery_00.ogg",
+     "root": 70.04
+    },
+    {
+     "file": "psaltery_01.ogg",
+     "root": 72.03
+    },
+    {
+     "file": "psaltery_02.ogg",
+     "root": 74.04
+    },
+    {
+     "file": "psaltery_03.ogg",
+     "root": 76.02
+    },
+    {
+     "file": "psaltery_04.ogg",
+     "root": 78.01
+    },
+    {
+     "file": "psaltery_05.ogg",
+     "root": 80.03
+    },
+    {
+     "file": "psaltery_06.ogg",
+     "root": 82.0
+    },
+    {
+     "file": "psaltery_07.ogg",
+     "root": 84.02
+    },
+    {
+     "file": "psaltery_08.ogg",
+     "root": 86.0
+    },
+    {
+     "file": "psaltery_09.ogg",
+     "root": 88.05
+    },
+    {
+     "file": "psaltery_10.ogg",
+     "root": 90.05
+    }
+   ]
+  },
+  {
+   "id": "bowvibes",
+   "name": "BOWED VIBES",
+   "desc": "bowed metal bars",
+   "cat": "HAUNTED",
+   "release": 0.8,
+   "oneshot": false,
+   "samples": [
+    {
+     "file": "bowvibes_00.ogg",
+     "root": 63.99
+    },
+    {
+     "file": "bowvibes_01.ogg",
+     "root": 66.99
+    },
+    {
+     "file": "bowvibes_02.ogg",
+     "root": 74.0
+    },
+    {
+     "file": "bowvibes_03.ogg",
+     "root": 81.0
+    },
+    {
+     "file": "bowvibes_04.ogg",
+     "root": 87.99
+    }
+   ]
+  },
+  {
+   "id": "flexatone",
+   "name": "FLEXATONE",
+   "desc": "the horror-movie wobble",
+   "cat": "HAUNTED",
+   "release": 1.0,
+   "oneshot": true,
+   "samples": [
+    {
+     "file": "flexatone_00.ogg",
+     "root": 60.0
+    }
+   ]
+  },
+  {
+   "id": "siren",
+   "name": "SIREN WHISTLE",
+   "desc": "rising scream",
+   "cat": "HAUNTED",
+   "release": 1.0,
+   "oneshot": true,
+   "samples": [
+    {
+     "file": "siren_00.ogg",
+     "root": 60.0
+    }
+   ]
+  },
+  {
+   "id": "gong",
+   "name": "GONG SCRAPE",
+   "desc": "metal dragged on bronze",
+   "cat": "HAUNTED",
+   "release": 1.2,
+   "oneshot": true,
+   "samples": [
+    {
+     "file": "gong_00.ogg",
+     "root": 60.0
+    }
+   ]
+  },
+  {
+   "id": "didge",
+   "name": "DIDGERIDOO",
+   "desc": "low drone · breath",
+   "cat": "HAUNTED",
+   "release": 0.8,
+   "oneshot": true,
+   "samples": [
+    {
+     "file": "didge_00.ogg",
+     "root": 60.0
+    }
+   ]
+  },
+  {
+   "id": "timpani",
+   "name": "TIMPANI ROLL",
+   "desc": "thunder from below",
+   "cat": "HAUNTED",
+   "release": 1.0,
+   "oneshot": true,
+   "samples": [
+    {
+     "file": "timpani_00.ogg",
+     "root": 60.0
+    }
+   ]
+  }
+ ]
+}

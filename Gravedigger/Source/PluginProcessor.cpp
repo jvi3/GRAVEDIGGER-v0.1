@@ -1,14 +1,124 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
+#include "BinaryData.h"
 
 namespace gd
 {
+// ------------------------------------------------------------------ embedded sample library
+const std::vector<LibInfo>& libraryInfo()
+{
+    static const std::vector<LibInfo> infos = []
+    {
+        std::vector<LibInfo> out;
+        int size = 0;
+        const char* data = BinaryData::getNamedResource ("library_json", size);
+        if (data == nullptr || size <= 0) return out;
+        const auto json = juce::JSON::parse (juce::String::fromUTF8 (data, size));
+        if (auto* arr = json.getProperty ("instruments", {}).getArray())
+            for (auto& v : *arr)
+            {
+                LibInfo li;
+                li.id = v.getProperty ("id", {}).toString();
+                li.name = v.getProperty ("name", {}).toString();
+                li.desc = v.getProperty ("desc", {}).toString();
+                li.cat = v.getProperty ("cat", {}).toString();
+                li.release = (float) (double) v.getProperty ("release", 0.3);
+                li.oneshot = (bool) v.getProperty ("oneshot", false);
+                if (auto* smp = v.getProperty ("samples", {}).getArray())
+                    for (auto& z : *smp)
+                        li.files.push_back ({ z.getProperty ("file", {}).toString(), (float) (double) z.getProperty ("root", 60.0) });
+                if (! li.files.empty()) out.push_back (li);
+            }
+        return out;
+    }();
+    return infos;
+}
+
+juce::StringArray bodyNames()
+{
+    juce::StringArray s { "PIANO", "RHODES", "NYLON", "STRINGS", "CHOIR" };
+    for (auto& li : libraryInfo()) s.add (li.name);
+    return s;
+}
+
+juce::StringArray bodyDescs()
+{
+    const juce::String dot = juce::String::charToString ((juce::juce_wchar) 0x00B7);
+    juce::StringArray s;
+    s.add ("synth " + dot + " felt " + dot + " old hammers");
+    s.add ("synth " + dot + " electric bell");
+    s.add ("synth " + dot + " plucked gut strings");
+    s.add ("synth " + dot + " 1960s section");
+    s.add ("synth " + dot + " ooh / aah");
+    for (auto& li : libraryInfo()) s.add (li.desc);
+    return s;
+}
+
+std::vector<int> bodyCats()
+{
+    std::vector<int> c (kNumSynthBodies, 0);
+    for (auto& li : libraryInfo()) c.push_back (li.cat == "HAUNTED" ? 2 : 1);
+    return c;
+}
+
+SampleSetPtr GdProcessor::loadSet (const LibInfo& info)
+{
+    auto set = std::make_shared<SampleSet>();
+    set->release = info.release;
+    set->oneshot = info.oneshot;
+    juce::OggVorbisAudioFormat ogg;
+    for (auto& f : info.files)
+    {
+        int size = 0;
+        const juce::String res = f.first.replaceCharacter ('.', '_').replaceCharacter ('-', '_');
+        const char* data = BinaryData::getNamedResource (res.toRawUTF8(), size);
+        if (data == nullptr || size <= 0) continue;
+        std::unique_ptr<juce::AudioFormatReader> reader (ogg.createReaderFor (new juce::MemoryInputStream (data, (size_t) size, false), true));
+        if (reader == nullptr || reader->lengthInSamples <= 0) continue;
+        Zone z;
+        const int len = (int) reader->lengthInSamples;
+        z.audio.setSize (2, len);
+        z.audio.clear();
+        reader->read (&z.audio, 0, len, 0, true, true);
+        z.sr = reader->sampleRate;
+        z.root = f.second;
+        set->zones.push_back (std::move (z));
+    }
+    return set;
+}
+
+SampleSetPtr GdProcessor::currentSet (int body)
+{
+    if (loadedBody.load() != body) return nullptr;
+    juce::SpinLock::ScopedTryLockType tl (setLock);
+    if (! tl.isLocked()) return nullptr;
+    return loaded;
+}
+
+void GdProcessor::ensureLibraryLoaded()
+{
+    const int body = (int) std::lround (pBody->load());
+    const int li = body - kNumSynthBodies;
+    if (li >= 0 && li < (int) libraryInfo().size() && loadedBody.load() != body)
+    {
+        auto s = loadSet (libraryInfo()[(size_t) li]);
+        juce::SpinLock::ScopedLockType l (setLock);
+        if (loaded != nullptr) graveyard.push_back (loaded);
+        loaded = s;
+        loadedBody.store (body);
+    }
+    // free sets no voice is using any more (only the graveyard still holds them)
+    juce::SpinLock::ScopedLockType l (setLock);
+    graveyard.erase (std::remove_if (graveyard.begin(), graveyard.end(),
+                                     [] (const SampleSetPtr& p) { return p.use_count() == 1; }),
+                     graveyard.end());
+}
+
 juce::AudioProcessorValueTreeState::ParameterLayout GdProcessor::createLayout()
 {
     using namespace juce;
     std::vector<std::unique_ptr<RangedAudioParameter>> p;
-    p.push_back (std::make_unique<AudioParameterChoice> (ParameterID { "body", 1 }, "Body",
-                    StringArray { "Piano", "Rhodes", "Nylon", "Strings", "Choir" }, 1));
+    p.push_back (std::make_unique<AudioParameterChoice> (ParameterID { "body", 1 }, "Body", bodyNames(), 1));
     p.push_back (std::make_unique<AudioParameterFloat> (ParameterID { "years", 1 }, "Years Buried",
                     NormalisableRange<float> (0.0f, 80.0f, 1.0f), 52.0f));
     p.push_back (std::make_unique<AudioParameterFloat> (ParameterID { "rot", 1 },   "Rot",   NormalisableRange<float> (0.0f, 1.0f), 0.38f));
@@ -46,9 +156,10 @@ GdProcessor::GdProcessor()
     pReverse = apvts.getRawParameterValue ("reverse");
 
     synth.addSound (new GdSound());
-    for (int i = 0; i < 12; ++i) synth.addVoice (new GdVoice (pBody, pSink, i));
+    for (int i = 0; i < 16; ++i) synth.addVoice (new GdVoice (pBody, pSink, this, i));
 
     apvts.addParameterListener ("chop", this);
+    triggerAsyncUpdate();
 }
 
 GdProcessor::~GdProcessor()
@@ -131,6 +242,10 @@ void GdProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuff
     }
 
     // ---- sound sources
+    {
+        const int body = (int) std::lround (pBody->load());
+        if (body >= kNumSynthBodies && loadedBody.load() != body) triggerAsyncUpdate();
+    }
     const int mode = (int) std::lround (pMode->load());
     if (mode != lastMode)
     {
@@ -231,6 +346,7 @@ void GdProcessor::toggleCapture()
 
 void GdProcessor::handleAsyncUpdate()
 {
+    ensureLibraryLoaded();
     if (capState.load() == capFinishing) finishCapture();
     if (rechopPending.exchange (false)) rechop();
 }
